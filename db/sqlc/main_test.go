@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 )
 
 const (
@@ -16,11 +17,13 @@ const (
 var testQueries *Queries
 
 func TestMain(m *testing.M) {
-	conn, err := pgx.Connect(context.Background(), dbSource)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	conn, err := pgx.Connect(ctx, dbSource)
 	if err != nil {
 		log.Fatal("Cannot connect to Database", err)
 	}
-
 	testQueries = New(conn)
+	defer conn.Close(ctx)
 	os.Exit(m.Run())
 }
