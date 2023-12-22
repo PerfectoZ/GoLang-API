@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"github.com/PerfectoZ/GoLang-API/util"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -73,7 +74,7 @@ func TestDeleteAccount(t *testing.T) {
 
 	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
 	require.Error(t, err)
-	require.EqualError(t, err, "no rows in result set")
+	require.EqualError(t, err, sql.ErrNoRows.Error())
 	require.Empty(t, account2)
 }
 
