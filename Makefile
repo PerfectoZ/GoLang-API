@@ -14,4 +14,5 @@ test:
 	go test -v -cover ./...
 	make migratedown
 	make migrateup
+
 .PHONY: postgres createdb dropdb migrateup migratedown sqlc test
