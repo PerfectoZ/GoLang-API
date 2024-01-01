@@ -28,6 +28,6 @@ jobs:
           REPOSITORY: golang-backend
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          pwd
+          ls
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
