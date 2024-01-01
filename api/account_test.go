@@ -29,7 +29,7 @@ func TestGetAccountAPI(t *testing.T) {
 		accountID     int64
 		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
 		buildStubs    func(store *mockdb.MockStore)
-		checkResponse func(t *testing.T, recoder *httptest.ResponseRecorder)
+		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		{
 			name:      "OK",
@@ -45,6 +45,7 @@ func TestGetAccountAPI(t *testing.T) {
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
+				fmt.Println(recorder.Body)
 				requireBodyMatchAccount(t, recorder.Body, account)
 			},
 		},
@@ -161,7 +162,7 @@ func TestCreateAccountAPI(t *testing.T) {
 		body          gin.H
 		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
 		buildStubs    func(store *mockdb.MockStore)
-		checkResponse func(recoder *httptest.ResponseRecorder)
+		checkResponse func(recorder *httptest.ResponseRecorder)
 	}{
 		{
 			name: "OK",
@@ -173,7 +174,7 @@ func TestCreateAccountAPI(t *testing.T) {
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				arg := db.CreateAccountParams{
-					Owner:    account.Owner,
+					Owner:    user.Username,
 					Currency: account.Currency,
 					Balance:  0,
 				}
@@ -184,7 +185,8 @@ func TestCreateAccountAPI(t *testing.T) {
 					Return(account, nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusOK, recorder.Code)
+				fmt.Println(recorder.Body)
+				require.Equal(t, http.StatusCreated, recorder.Code)
 				requireBodyMatchAccount(t, recorder.Body, account)
 			},
 		},
