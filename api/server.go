@@ -23,20 +23,24 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		return nil, fmt.Errorf("Cannot Create TokenMaker")
 	}
 	server := &Server{store: store, tokenMaker: tokenMaker, config: config}
-	router := gin.Default()
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
+	server.setupRouter()
+	return server, nil
+}
+
+func (server *Server) setupRouter() {
+	router := gin.Default()
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
 	router.GET("/accounts", server.listAccount)
 	router.POST("/transfers", server.createTransfer)
 	router.POST("/users", server.createUser)
-
+	router.POST("/users/login", server.loginUser)
 	server.router = router
-	return server, nil
 }
 
 func (server *Server) Start(address string) error {
